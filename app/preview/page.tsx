@@ -258,7 +258,7 @@ export default function PreviewPage() {
                   🎣 钩子字幕
                 </div>
                 <div className="text-gray-900 dark:text-white italic">
-                  "{reel.hook_subtitle}"
+                  &ldquo;{reel.hook_subtitle}&rdquo;
                 </div>
               </div>
 
@@ -294,7 +294,7 @@ export default function PreviewPage() {
                     )}
                   </div>
                   <div className="text-gray-800 dark:text-gray-200 text-sm italic">
-                    "{reel.voiceover_script}"
+                    &ldquo;{reel.voiceover_script}&rdquo;
                   </div>
                 </div>
               )}

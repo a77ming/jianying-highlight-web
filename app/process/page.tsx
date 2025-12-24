@@ -125,7 +125,7 @@ export default function ProcessPage() {
                   ⏱️ {reel.start_time} - {reel.end_time}
                 </div>
                 <div className="text-gray-600 dark:text-gray-400 text-xs italic">
-                  "{reel.hook_subtitle.substring(0, 50)}..."
+                  &ldquo;{reel.hook_subtitle.substring(0, 50)}...&rdquo;
                 </div>
               </div>
             ))}

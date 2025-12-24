@@ -189,7 +189,7 @@ export default function FileUpload() {
                 <div className="font-semibold mb-1">AI已配置Facebook原创性合规</div>
                 <div className="opacity-90">
                   所有生成的剪辑方案都包含独特画外音、创意剪辑手法、信息字幕等元素，
-                  符合Facebook"有意义润色"标准，不会被判定为缺乏原创性。
+                  符合Facebook&ldquo;有意义润色&rdquo;标准，不会被判定为缺乏原创性。
                 </div>
               </div>
             </div>
