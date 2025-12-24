@@ -80,9 +80,28 @@ export class AIAnalyzer {
       }
 
       return [];
-    } catch (error) {
-      console.error('AI分析失败:', error);
-      throw new Error('AI分析失败，请检查API配置');
+    } catch (error: any) {
+      console.error('AI分析失败 - 详细错误:', {
+        message: error.message,
+        status: error.status,
+        code: error.code,
+        type: error.type,
+      });
+
+      // 处理常见的 OpenAI API 错误
+      if (error.status === 401) {
+        throw new Error('API密钥无效或未授权，请检查API配置');
+      } else if (error.status === 429) {
+        throw new Error('API请求频率超限，请稍后重试');
+      } else if (error.status === 500) {
+        throw new Error('API服务器错误，请稍后重试');
+      } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+        throw new Error('无法连接到API服务器，请检查网络连接');
+      } else if (error instanceof SyntaxError) {
+        throw new Error('AI返回的数据格式错误');
+      }
+
+      throw new Error(`AI分析失败: ${error.message || '未知错误'}`);
     }
   }
 }

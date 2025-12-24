@@ -48,9 +48,26 @@ export default function FileUpload() {
         }),
       });
 
+      // 检查响应状态
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || '分析失败');
+        const errorText = await response.text();
+        let errorMessage = '分析失败';
+
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // 如果无法解析为 JSON，使用原始文本
+          errorMessage = errorText || errorMessage;
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      // 检查响应内容是否为空
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('服务器返回了无效的响应格式');
       }
 
       const data = await response.json();

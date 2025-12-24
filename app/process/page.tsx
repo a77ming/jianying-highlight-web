@@ -70,9 +70,26 @@ export default function ProcessPage() {
         body: formData,
       });
 
+      // 检查响应状态
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '处理失败');
+        const errorText = await response.text();
+        let errorMessage = '处理失败';
+
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // 如果无法解析为 JSON，使用原始文本
+          errorMessage = errorText || errorMessage;
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      // 检查响应内容类型
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('服务器返回了无效的响应格式');
       }
 
       const resultData = await response.json();

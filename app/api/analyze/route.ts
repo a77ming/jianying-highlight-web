@@ -8,7 +8,10 @@ export async function POST(request: NextRequest) {
     const { srtContent, synopsis, fileName } = body;
 
     if (!srtContent) {
-      return NextResponse.json({ error: '缺少SRT内容' }, { status: 400 });
+      return NextResponse.json(
+        { error: '缺少SRT内容' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // 内置的API密钥（用户不需要输入）
@@ -20,7 +23,10 @@ export async function POST(request: NextRequest) {
     const stats = srtParser.getStatistics();
 
     if (subtitles.length === 0) {
-      return NextResponse.json({ error: 'SRT文件解析失败或为空' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'SRT文件解析失败或为空' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // AI分析
@@ -34,7 +40,10 @@ export async function POST(request: NextRequest) {
     );
 
     if (reelScripts.length === 0) {
-      return NextResponse.json({ error: 'AI未能识别高光片段' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'AI未能识别高光片段' },
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // 返回结果
@@ -49,9 +58,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('分析API错误:', error);
+
+    // 确保返回 JSON 格式的错误
+    const errorMessage = error.message || '服务器错误';
     return NextResponse.json(
-      { error: error.message || '服务器错误' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }

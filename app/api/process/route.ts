@@ -10,11 +10,17 @@ export async function POST(request: NextRequest) {
     const dataJson = formData.get('data') as string;
 
     if (!video) {
-      return NextResponse.json({ error: '缺少视频文件' }, { status: 400 });
+      return NextResponse.json(
+        { error: '缺少视频文件' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     if (!dataJson) {
-      return NextResponse.json({ error: '缺少处理数据' }, { status: 400 });
+      return NextResponse.json(
+        { error: '缺少处理数据' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = JSON.parse(dataJson);
@@ -26,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (!ffmpegAvailable) {
       return NextResponse.json(
         { error: 'FFmpeg未安装，请先安装FFmpeg' },
-        { status: 500 }
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -57,9 +63,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('处理API错误:', error);
+
+    // 确保返回 JSON 格式的错误
+    const errorMessage = error.message || '服务器错误';
     return NextResponse.json(
-      { error: error.message || '服务器错误' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
