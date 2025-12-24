@@ -10,6 +10,11 @@ export default function FileUpload() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 自定义参数
+  const [maxHighlights, setMaxHighlights] = useState(5);
+  const [minDuration, setMinDuration] = useState(8);
+  const [maxDuration, setMaxDuration] = useState(15);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile && !selectedFile.name.endsWith('.srt')) {
@@ -45,6 +50,9 @@ export default function FileUpload() {
           srtContent: content,
           synopsis,
           fileName: file.name,
+          maxHighlights,
+          minDuration,
+          maxDuration,
         }),
       });
 
@@ -143,6 +151,91 @@ export default function FileUpload() {
             </p>
           </div>
 
+          {/* 自定义参数 */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">⚙️</span>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                自定义AI参数
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* 最大片段数 */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  最大片段数
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="20"
+                  value={maxHighlights}
+                  onChange={(e) => setMaxHighlights(Number(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                    focus:outline-none focus:ring-2 focus:ring-purple-500
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                    text-sm transition-colors"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  识别的高光片段数量
+                </p>
+              </div>
+
+              {/* 最小时长 */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  最小时长（秒）
+                </label>
+                <input
+                  type="number"
+                  min="3"
+                  max="60"
+                  value={minDuration}
+                  onChange={(e) => setMinDuration(Number(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                    focus:outline-none focus:ring-2 focus:ring-purple-500
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                    text-sm transition-colors"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  单个片段最短时长
+                </p>
+              </div>
+
+              {/* 最大时长 */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  最大时长（秒）
+                </label>
+                <input
+                  type="number"
+                  min="5"
+                  max="180"
+                  value={maxDuration}
+                  onChange={(e) => setMaxDuration(Number(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                    focus:outline-none focus:ring-2 focus:ring-purple-500
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                    text-sm transition-colors"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  单个片段最长时长
+                </p>
+              </div>
+            </div>
+
+            {/* 参数说明 */}
+            <div className="mt-3 p-2 bg-white/50 dark:bg-gray-700/50 rounded text-xs text-gray-600 dark:text-gray-400">
+              💡 <strong>提示：</strong>
+              {maxHighlights > 10 ? '片段数量较多会消耗更多API配额。' : ''}
+              {minDuration > 30 ? '较长的时长可能需要更多内容。' : ''}
+              {maxDuration < 10 ? '较短的时长适合快节奏剪辑。' : ''}
+              {maxDuration < minDuration ? '⚠️ 最大时长不能小于最小时长！' : ''}
+              {!maxHighlights || !minDuration || !maxDuration ? '⚠️ 请填写所有参数。' : '✓ 参数设置合理。'}
+            </div>
+          </div>
+
           {/* 错误提示 */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
@@ -184,17 +277,17 @@ export default function FileUpload() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
             <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 rounded-lg">
               <div className="font-medium">最大片段数</div>
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">5</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{maxHighlights}</div>
               <div className="text-xs mt-1 opacity-75">个高光片段</div>
             </div>
             <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 rounded-lg">
               <div className="font-medium">最小时长</div>
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">8</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{minDuration}</div>
               <div className="text-xs mt-1 opacity-75">秒/片段</div>
             </div>
             <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 rounded-lg">
               <div className="font-medium">最大时长</div>
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">15</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{maxDuration}</div>
               <div className="text-xs mt-1 opacity-75">秒/片段</div>
             </div>
           </div>

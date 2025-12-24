@@ -5,7 +5,7 @@ import { AIAnalyzer } from '@/lib/ai-analyzer';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { srtContent, synopsis, fileName } = body;
+    const { srtContent, synopsis, fileName, maxHighlights, minDuration, maxDuration } = body;
 
     if (!srtContent) {
       return NextResponse.json(
@@ -29,14 +29,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 使用自定义参数或默认值
+    const maxHighlightsValue = maxHighlights || 5;
+    const minDurationValue = minDuration || 8;
+    const maxDurationValue = maxDuration || 15;
+
+    // 参数验证
+    if (maxDurationValue < minDurationValue) {
+      return NextResponse.json(
+        { error: '最大时长不能小于最小时长' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (maxHighlightsValue < 1 || maxHighlightsValue > 20) {
+      return NextResponse.json(
+        { error: '最大片段数必须在1-20之间' },
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // AI分析
     const aiAnalyzer = new AIAnalyzer(apiKey);
     const reelScripts = await aiAnalyzer.analyzeHighlights(
       subtitles,
       synopsis || '',
-      5, // maxHighlights
-      8, // minDuration
-      15 // maxDuration
+      maxHighlightsValue,
+      minDurationValue,
+      maxDurationValue
     );
 
     if (reelScripts.length === 0) {
@@ -54,6 +74,11 @@ export async function POST(request: NextRequest) {
       reelScripts,
       srtContent,
       synopsis,
+      parameters: {
+        maxHighlights: maxHighlightsValue,
+        minDuration: minDurationValue,
+        maxDuration: maxDurationValue,
+      },
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
