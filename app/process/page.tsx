@@ -21,6 +21,13 @@ export default function ProcessPage() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<any>(null);
 
+  // 转换为下载API路径
+  const convertToDownloadPath = (path: string) => {
+    // 移除开头的斜杠并编码
+    const cleanPath = path.replace(/^\//, '');
+    return `/api/download/${cleanPath}`;
+  };
+
   useEffect(() => {
     try {
       // 从localStorage读取数据
@@ -172,7 +179,7 @@ export default function ProcessPage() {
                 </h3>
                 <div className="space-y-3">
                   <a
-                    href={result.finalVideo}
+                    href={convertToDownloadPath(result.finalVideo)}
                     download
                     className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
                   >
@@ -188,7 +195,7 @@ export default function ProcessPage() {
                   </a>
 
                   <a
-                    href={result.executionTable}
+                    href={convertToDownloadPath(result.executionTable)}
                     download
                     className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
                   >
@@ -213,7 +220,7 @@ export default function ProcessPage() {
                   {result.clipFiles.map((clip: string, index: number) => (
                     <a
                       key={index}
-                      href={clip}
+                      href={convertToDownloadPath(clip)}
                       download
                       className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded hover:shadow-md transition-shadow text-sm"
                     >

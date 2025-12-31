@@ -1,0 +1,38 @@
+# 依赖
+node_modules
+.pnpm-store
+
+# 构建输出
+.next
+out
+dist
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# 日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 其他
+.env
+.env.local
+.env.*.local
+*.md
+!README.md
+
+# 数据目录（挂载卷）
+uploads
+outputs

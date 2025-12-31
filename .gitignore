@@ -36,3 +36,10 @@ next-env.d.ts
 
 # output files
 /public/output
+
+# Docker
+uploads/
+outputs/
+
+# Build outputs
+dist/
